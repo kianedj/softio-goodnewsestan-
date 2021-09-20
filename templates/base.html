@@ -29,6 +29,9 @@
         <li class="nav-item">
           <a href="{% url 'article_new' %}">+ New</a>
         </li>
+        <li class="nav-item">
+          <a href="{% url 'chat_detailtwo' pk=request.user.id %}">| | Chat</a>
+        </li>
       </ul>
     {% endif %}
 

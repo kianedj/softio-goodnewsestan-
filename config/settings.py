@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'accounts',
     'pages',
     'article',
+    'ChatApp',
 ]
 
 MIDDLEWARE = [
