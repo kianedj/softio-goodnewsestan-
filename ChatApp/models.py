@@ -11,7 +11,7 @@ class Chat(models.Model):
     message = models.CharField(max_length=1200, null=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.message
     
