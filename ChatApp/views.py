@@ -48,6 +48,8 @@ def get_chat_list(request,pk):
         if item != request.user:
             last_message = Chat.objects.values('sender__username', 'reciver__username', 'message', 'timestamp','sender__id','reciver__id').filter(Q(sender=sender,reciver=item) | Q(sender=item,reciver=sender)).last()
             if last_message != None:
+                if len(last_message['message']) > 33:
+                    last_message['message'] = last_message['message'][:37]+' ...'
                 chatviewlist.append(last_message)
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id:
@@ -59,18 +61,32 @@ def get_chat_list(request,pk):
 
     return chatviewlist
 
+def get_chat_detail(request,pk):
+    sender = request.user
+    reciver = CustomUser.objects.get(id=pk)        
+    object = Chat.objects.values("reciver__username","sender__username","message", "timestamp","sender__id").filter(Q(sender=sender, reciver=reciver) | Q(sender=reciver, reciver=sender))
+    x=0
+    for item in object:
+
+        if len(item['message']) > 37:
+
+            if item['message'][32:37].find(' ') >= 32:
+                x = item['message'][32:37].find(' ')
+                item['message'] = item['message'][:x] + '\n' + item['message'][x:]
+            else:
+                item['message'] = item['message'][:37] + '\n' + item['message'][37:]
+
+    return object  
+
 
 def ChatDetailViewtwo(request,pk):
     '''
     return the list of chat between two participate
     '''
     if not request.POST:
-        sender = request.user
-        reciver = CustomUser.objects.get(id=pk)        
-        object = Chat.objects.values("reciver__username","sender__username","message", "timestamp","sender__id").filter(Q(sender=sender, reciver=reciver) | Q(sender=reciver, reciver=sender))
-               
+    
         context =  { 
-        'object' : object ,
+        'object' : get_chat_detail(request,pk) ,
         'listobject': get_chat_list(request,pk)
         }
 
@@ -82,15 +98,12 @@ def ChatDetailViewtwo(request,pk):
         message = request.POST.get('message')
         chat_msg = Chat(sender=sender, reciver=reciver, message=message)
         Chat.save(chat_msg)
-        object = Chat.objects.values("reciver__username","sender__username","message", "timestamp", 'sender__id', 'reciver__id').filter(Q(sender=sender , reciver=reciver) | Q(reciver=sender , sender=reciver))
         
         context =  { 
-        'object' : object,
+        'object' : get_chat_detail(request,pk),
         "listobject" : get_chat_list(request,pk)
         }
         
         return render(request, 'chat_detailtwo.html', context=context)
 
-class ChatListView(ListView):
-    model = Chat
 
