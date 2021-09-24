@@ -30,9 +30,15 @@ class ChatDetailView(ListView):
     template_name = 'chat_detail.html'
 
 def get_chat_list(request,pk):
+
+    '''
+    get the first 27 character of last messages in chat and other needed fields, 
+    then return it as list object.
+    '''
+    
     sender = request.user
     reciver = CustomUser.objects.get(id=pk)
-    objectview = Chat.objects.values("reciver__id","sender__id","message", "timestamp").filter(Q(sender=sender) | Q(reciver=sender))        
+    objectview = Chat.objects.values("reciver__id","sender__id","message", "timestamp").filter(Q(sender=sender) | Q(reciver=sender))
     listobject = []
     for item in objectview:
         listobject.append(item['reciver__id'])
@@ -59,6 +65,8 @@ def get_chat_list(request,pk):
         elif item['sender__id'] == request.user.id:
             item['sender__id'] = item['reciver__id']
             item['sender__username'] = item['reciver__username']
+
+    chatviewlist = sorted(chatviewlist, key=lambda i: i['timestamp'], reverse=True)
 
     return chatviewlist
 
