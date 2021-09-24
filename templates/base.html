@@ -27,12 +27,12 @@
     {% if user.is_authenticated %}
       <ul class='navbar-nav mr-auto'>
         <li class="nav-item">
-          <a href="{% url 'article_new' %}">+ New</a>
+          <a href="{% url 'article_new' %}" class="btn btn-primary ml-2">+ New</a>
         </li>
       </ul>
       <ul class='navbar-nav mr-auto'>
         <li class="nav-item">
-          <a href="{% url 'chat_detailtwo' pk=request.user.id %}">| | Chat</a>
+          <a href="{% url 'chat_detailtwo' pk=request.user.id %}" class="btn btn-primary ml-2">Chat</a>
         </li>
       </ul>
     {% endif %}

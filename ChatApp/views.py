@@ -51,6 +51,7 @@ def get_chat_list(request,pk):
                 if len(last_message['message']) > 33:
                     last_message['message'] = last_message['message'][:37]+' ...'
                 chatviewlist.append(last_message)
+    
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id:
             item['reciver__id'] = item['sender__id']
@@ -64,18 +65,19 @@ def get_chat_list(request,pk):
 def get_chat_detail(request,pk):
     sender = request.user
     reciver = CustomUser.objects.get(id=pk)        
-    object = Chat.objects.values("reciver__username","sender__username","message", "timestamp","sender__id").filter(Q(sender=sender, reciver=reciver) | Q(sender=reciver, reciver=sender))
+    object = Chat.objects.values("reciver__username","sender__username","message", "timestamp","sender__id", "is_read").filter(Q(sender=sender, reciver=reciver) | Q(sender=reciver, reciver=sender))
     x=0
+    
     for item in object:
-
+    
         if len(item['message']) > 37:
 
-            if item['message'][32:37].find(' ') >= 32:
+            if item['message'][25:32].find(' ') >= 32:
                 x = item['message'][32:37].find(' ')
                 item['message'] = item['message'][:x] + '\n' + item['message'][x:]
             else:
-                item['message'] = item['message'][:37] + '\n' + item['message'][37:]
-
+                item['message'] = item['message'][:32] + '\n' + item['message'][32:]
+        
     return object  
 
 
