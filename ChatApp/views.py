@@ -73,7 +73,7 @@ def get_chat_list(request,pk):
 def get_chat_detail(request,pk):
     sender = request.user
     reciver = CustomUser.objects.get(id=pk)        
-    object = Chat.objects.values("reciver__username","sender__username","message", "timestamp","sender__id", "is_read").filter(Q(sender=sender, reciver=reciver) | Q(sender=reciver, reciver=sender))
+    object = Chat.objects.values("id","reciver__username","sender__username","message", "timestamp","sender__id",'reciver__id', "is_read").filter(Q(sender=sender, reciver=reciver) | Q(sender=reciver, reciver=sender))
     x=0
     
     for item in object:
@@ -85,7 +85,14 @@ def get_chat_detail(request,pk):
                 item['message'] = item['message'][:x] + '\n' + item['message'][x:]
             else:
                 item['message'] = item['message'][:32] + '\n' + item['message'][32:]
+    
+    for item in object:
         
+        if request.user.id == item["reciver__id"]:
+            read_chat=Chat.objects.get(id=item['id'])
+            read_chat.is_read = True
+            read_chat.save()
+
     return object  
 
 
