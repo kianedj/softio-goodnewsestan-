@@ -52,12 +52,18 @@ def get_chat_list(request,pk):
     chatviewlist=[]
     for item in final_chat_list:
         if item != request.user:
-            last_message = Chat.objects.values('sender__username', 'reciver__username', 'message', 'timestamp','sender__id','reciver__id').filter(Q(sender=sender,reciver=item) | Q(sender=item,reciver=sender)).last()
+            last_message = Chat.objects.values('sender__username', 'reciver__username', 'message', 'timestamp','sender__id','reciver__id','is_read').filter(Q(sender=sender,reciver=item) | Q(sender=item,reciver=sender)).last()
             if last_message != None:
                 if len(last_message['message']) > 33:
                     last_message['message'] = last_message['message'][:37]+' ...'
                 chatviewlist.append(last_message)
     
+
+    count = 0
+    for item in chatviewlist:
+        if item['reciver__id'] == request.user.id and item['is_read'] == False:
+            count += 1
+
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id:
             item['reciver__id'] = item['sender__id']
@@ -68,7 +74,7 @@ def get_chat_list(request,pk):
 
     chatviewlist = sorted(chatviewlist, key=lambda i: i['timestamp'], reverse=True)
 
-    return chatviewlist
+    return chatviewlist, count
 
 def get_chat_detail(request,pk):
     sender = request.user
@@ -85,13 +91,15 @@ def get_chat_detail(request,pk):
                 item['message'] = item['message'][:x] + '\n' + item['message'][x:]
             else:
                 item['message'] = item['message'][:32] + '\n' + item['message'][32:]
-    
+
+
     for item in object:
         
         if request.user.id == item["reciver__id"]:
             read_chat=Chat.objects.get(id=item['id'])
             read_chat.is_read = True
             read_chat.save()
+
 
     return object  
 
@@ -101,10 +109,13 @@ def ChatDetailViewtwo(request,pk):
     return the list of chat between two participate
     '''
     if not request.POST:
-    
+        
+        listobject, count = get_chat_list(request,pk)
+
         context =  { 
         'object' : get_chat_detail(request,pk) ,
-        'listobject': get_chat_list(request,pk)
+        'listobject': listobject,
+        'count' : count
         }
 
         return render(request, 'chat_detailtwo.html',context=context)    
@@ -116,9 +127,12 @@ def ChatDetailViewtwo(request,pk):
         chat_msg = Chat(sender=sender, reciver=reciver, message=message)
         Chat.save(chat_msg)
         
+        listobject, count = get_chat_list(request,pk)
+
         context =  { 
         'object' : get_chat_detail(request,pk),
-        "listobject" : get_chat_list(request,pk)
+        "listobject" : listobject,
+        "count" : count
         }
         
         return render(request, 'chat_detailtwo.html', context=context)
