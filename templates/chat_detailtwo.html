@@ -37,7 +37,7 @@
                     <div class="media"><img src="https://transplant.org.au/wp-content/uploads/2018/06/James-avatar-for-website.png" alt="user" width="50" class="rounded-circle">
                         <div class="media-body ml-4">
                         <div class="d-flex align-items-center justify-content-between mb-1  text-truncate">
-                            <h6 class="mb-0">{% if item.sender__id != request.user.id %}{{ item.sender__username }}{% else %}{{ item.reciver__username }}{% endif %}</h6><small class="small font-weight-bold">{{ item.timestamp }}</small>
+                            <h6 class="mb-0">{% if item.sender__id != request.user.id %}{{ item.sender__username }}{% else %}{{ item.reciver__username }}{% endif %}</h6><small class="small bg-danger px-2 text-white rounded center font-weight-bold">{{item.unread_count}}</small><small class="small font-weight-bold">{{ item.timestamp }}</small>
                         </div>
                         <p class="font-italic text-muted mb-0 text-small">{{ item.message }}</p>
                         </div>

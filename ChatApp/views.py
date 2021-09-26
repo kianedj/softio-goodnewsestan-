@@ -32,7 +32,7 @@ class ChatDetailView(ListView):
 def get_chat_list(request,pk):
 
     '''
-    get the first 27 character of last messages in chat and other needed fields, 
+    get the first 27 character of last messages, total unread messages, in chat and other needed fields, 
     then return it as list object.
     '''
     
@@ -58,20 +58,23 @@ def get_chat_list(request,pk):
                     last_message['message'] = last_message['message'][:37]+' ...'
                 chatviewlist.append(last_message)
     
-
+    ''' Total unread messages of user '''
     count = 0
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id and item['is_read'] == False:
             count += 1
-
+    counter = 0
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id:
             item['reciver__id'] = item['sender__id']
             item['reciver__username'] = item['sender__username']
+            if item['is_read'] == False:
+                counter += 1
+                item['unread_count'] = counter
         elif item['sender__id'] == request.user.id:
             item['sender__id'] = item['reciver__id']
             item['sender__username'] = item['reciver__username']
-
+    
     chatviewlist = sorted(chatviewlist, key=lambda i: i['timestamp'], reverse=True)
 
     return chatviewlist, count
