@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'pages',
     'article',
     'ChatApp',
+    'bitcoin',
 ]
 
 MIDDLEWARE = [

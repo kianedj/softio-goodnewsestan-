@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bitcoin Wallet Generator{% endblock title %}
+
+{% block content %}
+</br>
+</br>
+</br>
+    <h1>public_key</h1>
+    <img height=150 width=150 src="{% static 'images/public_key.png' %}">
+    <p class='font-weight-bold'>Public_Key: {{ public_key }}</p>
+    <h1>private_key</h1>
+    <img height=150 width=150 src="{% static 'images/private_key.png' %}">
+    <p class='font-weight-bold'>Private_key: {{ private_key }}</p>
+{% endblock content %}

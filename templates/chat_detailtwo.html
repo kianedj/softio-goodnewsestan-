@@ -17,8 +17,9 @@
                 </div>
                 
                 <div class="messages-box">
+                    
                 <div class="list-group rounded-0">
-                
+                    
 <!--                <div class="messages-box">
                     <div class="list-group rounded-0">
                       <a class="list-group-item list-group-item-action active text-white rounded-0">
@@ -39,7 +40,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-1  text-truncate">
                             <h6 class="mb-0">{% if item.sender__id != request.user.id %}{{ item.sender__username }}{% else %}{{ item.reciver__username }}{% endif %}</h6><small class="small bg-danger px-2 text-white rounded center font-weight-bold">{{item.unread_count}}</small><small class="small font-weight-bold">{{ item.timestamp }}</small>
                         </div>
-                        <p class="font-italic text-muted mb-0 text-small">{{ item.message }}</p>
+                        <p class="font-italic text-muted mb-0 text-small">{{ item.message }}</p><small class="font-weight-bold font-size-1 text-center " >{% if item.is_read == True %} seen {% else %} unseen {% endif %}</small>
                         </div>
                     </div>
                     </a>
@@ -50,8 +51,10 @@
             </div>
             </div>
             <!-- Chat Box-->
-            <div class="col-7 px-0">
-             <div class="px-4 py-5 chat-box bg-white">
+            <div class="col-7 px-0" id="godown2">
+               
+             <div class="px-4 py-5 chat-box bg-white" id='godown'>
+                
                 <!-- Sender Message-->
                 {% for item in object %}
                 {% if item.sender__id != request.user.id %}
@@ -79,7 +82,10 @@
 
 
             </div>
-
+            <script>
+                $("#godown").scrollTop($("#godown")[0].scrollHeight);
+                //alert($("#godown")[0].scrollHeight);
+            </script>
             <!-- Typing area -->
             <form action="#" class="bg-light" method="post">{% csrf_token %}
                 <div class="input-group">

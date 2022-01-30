@@ -63,6 +63,12 @@ def get_chat_list(request,pk):
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id and item['is_read'] == False:
             count += 1
+    
+
+
+    ''' 1- to make sure if the participate is sender or reciver,
+     only the participate will apear in the chatlist template
+     2- appear the quantity of unread messages from paticipate '''
     counter = 0
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id:
@@ -74,7 +80,8 @@ def get_chat_list(request,pk):
         elif item['sender__id'] == request.user.id:
             item['sender__id'] = item['reciver__id']
             item['sender__username'] = item['reciver__username']
-    
+
+
     chatviewlist = sorted(chatviewlist, key=lambda i: i['timestamp'], reverse=True)
 
     return chatviewlist, count
