@@ -128,6 +128,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+#MEDIA_ROOT = '/media/'
+#MEDIA_URL = str(BASE_DIR.joinpath('media'))
 #STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
 STATIC_ROOT = STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -151,4 +153,4 @@ EMAIL_HOST_PASSWORD = 'N7LBgdcbpxjZrOE4'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-CSRF_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
