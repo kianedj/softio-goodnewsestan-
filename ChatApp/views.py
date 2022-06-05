@@ -49,6 +49,10 @@ def get_chat_list(request,pk):
     chatviewlist=[]
     for item in final_chat_list:
         if item != request.user:
+            '''
+            Better queries are required to only fetech recent relevant data. This code right now fetches everything related to this user which means when there are many chats, the system will slow down.
+            It is a good idea to keep track of recently fetched chat items, cache them and only fetch new rows based on timestamps.
+            '''
             last_message = Chat.objects.values('sender__username', 'reciver__username', 'message', 'timestamp','sender__id','reciver__id','is_read').filter(Q(sender=sender,reciver=item) | Q(sender=item,reciver=sender)).last()
             if last_message != None:
                 if len(last_message['message']) > 33:
