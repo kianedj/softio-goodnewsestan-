@@ -17,10 +17,6 @@ class Chat(models.Model):
     
     def get_absolute_url(self):
         return reverse('chat_detail', args=[str(self.id)])
-
-    def recieve_msg(self, account):
-        pass
-    
     class Meta:
         ordering = ('timestamp',)
 

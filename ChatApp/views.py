@@ -13,15 +13,13 @@ from django.db.models import Q
 # Create your views here.
 
 class ChatCreateView(LoginRequiredMixin , CreateView):
-
     model = Chat
     fields = ('message')
     template_name = 'chat_create.html'
 
     def form_valid(self, form, pk):
         form.instance.sender = self.request.user
-        #print (self.request.POST['reciver'])
-        form.instance.reciver = CustomUser.objects.get(id=pk)#int(self.request.POST['reciver']))
+        form.instance.reciver = CustomUser.objects.get(id=pk)
         form.instance.message = self.request.POST.get('message')
         return super().form_valid(form)
 
@@ -34,8 +32,7 @@ def get_chat_list(request,pk):
     '''
     get the first 27 character of last messages, total unread messages, in chat and other needed fields, 
     then return it as list object.
-    '''
-    
+    '''    
     sender = request.user
     reciver = CustomUser.objects.get(id=pk)
     objectview = Chat.objects.values("reciver__id","sender__id","message", "timestamp").filter(Q(sender=sender) | Q(reciver=sender))
@@ -58,7 +55,7 @@ def get_chat_list(request,pk):
                     last_message['message'] = last_message['message'][:37]+' ...'
                 chatviewlist.append(last_message)
     
-    ''' Total unread messages of user '''
+    # Total unread messages of user 
     count = 0
     for item in chatviewlist:
         if item['reciver__id'] == request.user.id and item['is_read'] == False:
